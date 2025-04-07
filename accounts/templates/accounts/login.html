@@ -1,0 +1,59 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>login</title>       
+{% endblock title %}
+
+{% block body %}
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <form class="login100-form validate-form" action="" method="post">
+                {% csrf_token %}
+                <span class="login100-form-title p-b-26">
+                    VERNA SANAT
+                </span>
+                <span class="login100-form-title p-b-48">
+                    <img class="img-responsive" src="{% static 'accounts/images/logo.png' %}" alt="VERNA" style="width: 80%;" />
+                </span>
+
+                <div class="wrap-input100 validate-input" >
+                    <input class="input100" type="text" name="username">
+                    <span class="focus-input100" data-placeholder="username"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input" data-validate="Enter password">
+                    <span class="btn-show-pass">
+                        <i class="zmdi zmdi-eye"></i>
+                    </span>
+                    <input class="input100" type="password" name="password">
+                    <span class="focus-input100" data-placeholder="Password"></span>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <div class="wrap-login100-form-btn">
+                        <div class="login100-form-bgbtn"></div>
+                        <button class="login100-form-btn">
+                            Login
+                        </button>
+                    </div>
+                </div>
+                
+                {% comment %} <div class="text-center p-t-115">
+                    <span class="txt1">
+                        {{error}}
+                    </span>
+
+                    <a class="txt2" href="#">
+                        Sign Up
+                    </a>
+                </div>  {% endcomment %}
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div id="dropDownSelect1"></div>
+{% endblock body %}

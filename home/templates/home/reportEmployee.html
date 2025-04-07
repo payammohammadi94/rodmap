@@ -1,0 +1,134 @@
+{% extends "home/base-report.html" %}
+{% load static %}
+
+{% block title %}
+<title>Report-Employee</title>       
+{% endblock title %}
+
+{% block body %}
+
+<section class="timeline_area section_padding_130">
+    <div class="header-section">
+        <div class="header-center">
+            <h1 style="color:#fff;">Annual personnel report</h1>
+            <form method="get">
+                <div class="dropdown-filters">
+                    {% comment %} <select class="dropdown-filter" name="project">
+                        <option>Project </option>
+                        {% for project in projects %}
+                            <option>{{project.name}}</option>
+                        {% endfor %}
+                    </select> {% endcomment %}
+                    <select class="dropdown-filter" name="year" style="text-align:center;">
+                        <option>Year</option>
+                        {% for year in years %}
+                            <option>{{year.year}}</option>
+                        {% endfor %}
+                    </select>
+                    {% comment %} <select class="dropdown-filter" name="month">
+                        <option>Month</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                    </select> {% endcomment %}
+                    <button class="search-button">
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container p-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-8 col-lg-6">
+                <!-- Section Heading-->
+                <div class="section_heading text-center">
+                    <div class="wrapper">
+                        <div class="profile">
+                            <div class="overlay">
+                                <div class="about d-flex flex-column">
+                                    <div class="member-avatar">
+                                        <img src="{{employee.photo.url}}" alt="Team Member">
+                                    </div>
+                                    <h4>{{employee.user.first_name}} {{employee.user.last_name}}</h4> <span>{{employee.role}}</span>
+                                </div>
+                                <ul class="task-icons">
+                                    <li>Total</li>
+                                    <li>Completed</li>
+                                    <li>Failed</li>
+                                    <li>Stop</li>
+                                    <li>Pending</li>
+                                </ul>
+                                <ul class="social-icons">
+                                    <li>{{report_status.total}}</li>
+                                    <li>{{report_status.complete}}</li>
+                                    <li>{{report_status.field}}</li>
+                                    <li>{{report_status.stopProject}}</li>
+                                    <li>{{report_status.pending}}</li>  
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row p-4">
+            <div class="col-12">
+                <!-- Timeline Area-->
+                <div class="apland-timeline-area">
+                    <!-- Single Timeline Content-->
+                    {% for month, tasks in monthly_tasks.items %}
+                    <div class="single-timeline-area">
+                        <div class="timeline-date wow fadeInLeft" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInLeft;">
+                            <p>{{month}}</p>
+                        </div>
+                        <div class="row" style="color:#cdcdcd">
+                            {% for assignment in tasks %}
+
+                            <div class="col-12 col-md-6 col-lg-4"  style="direction:rtl">
+                                <div class="single-timeline-content d-flex wow fadeInLeft" data-wow-delay="0.3s" style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInLeft;">
+                                    {% if assignment.employee_status == "pending" %}
+                                        <div class="timeline-icon" style="background-color:#afdee6 !important;" ></div>
+                                    {% elif assignment.employee_status == "complete" %}
+                                        <div class="timeline-icon" style="background-color:#4CAF50 !important;">
+                                            
+                                        </div>
+                                    {% elif assignment.employee_status == "field" %}
+                                        <div class="timeline-icon" style="background-color:#F44336 !important;" ></div>
+                                    {% elif assignment.employee_status == "stopProject" %}
+                                        <div class="timeline-icon" style="background-color:#606060 !important;"></div>
+                                    {% endif %}
+                                    
+                                    <div class="timeline-text" style="padding: 0 10px 0 0;">
+                                        <h6 style="color:rgb(10, 179, 171)">{{assignment.task.title}}</h6>
+                                        <p>{{assignment.task.description|truncatewords:15}}</p>
+                                        <h5 style="margin-top:10px">تاریخ: {{assignment.task.deadline}}-{{assignment.task.month}}-{{assignment.task.year.year}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        <a href = "{% url 'home:teams' %}" style="text-decoration: none;">
+            <div class="month-display-container">
+                <div class="month-display">بازگشت</div>
+            </div>
+        </a>
+
+    </div>
+</section>
+
+{% endblock body %}
