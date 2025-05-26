@@ -40,6 +40,7 @@ class Project(models.Model):
     photo = models.ImageField(upload_to="project/",blank=True,null=True)
     create = models.DateTimeField(auto_now_add=True)
     number_of_step_until_end = models.IntegerField(blank=True,null=True)
+    doing_step_project = models.IntegerField(blank=True,null=True)
     create = models.DateTimeField(auto_now_add=True,db_index=True)
 
     class Meta:
@@ -100,6 +101,7 @@ class Task(models.Model):
     isHiden = models.BooleanField(default=False)
 
     create = models.DateTimeField(auto_now_add=True,db_index=True)
+    update = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'تسک‌ها'
@@ -115,10 +117,18 @@ class TaskAssignment(models.Model):
         ("field","field"),             #color red 
         ("stopProject","stopProject"), #color gray
     )
+    LEVEL_CHOICES = (
+        (1,"EASY"),
+        (2,"MEDIUM"),
+        (3,"HARD"),
+        (4,"CHALLENGE"),
+        (5,"SHORT TIME")
+    )
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE,related_name='taskAssignment')
     employee_status = models.CharField(max_length=20, choices=STATUS_CHOICES,default="pending")  # آیا کارمند تسک را به موقع تمام کرده؟
     description = models.TextField(blank=True,null=True)
+    task_level = models.IntegerField(choices=LEVEL_CHOICES,default=1)
 
     create  = models.DateTimeField(auto_now_add=True,db_index=True)
     update  = models.DateTimeField(auto_now=True)

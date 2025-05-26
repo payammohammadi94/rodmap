@@ -18,7 +18,7 @@
           <li><a href="{% url 'home:roadmap' %}">Road map</a></li>
           <li><a href="#services">Projects</a></li>
           {% if user.is_superuser %} 
-            <li><a href="{% url 'home:teams' %}">Team Report</a></li>
+            <li><a href="{% url 'home:teams' %}">Report's</a></li>
           {% endif %}
           
           {% if user.is_superuser %}          
@@ -74,7 +74,7 @@
             <div class="col-xl-2 col-md-4" data-aos="fade-up" data-aos-delay="500">
               <div class="icon-box">
                 <i class="bi bi-card-list"></i>
-                <h3><a href="{% url 'home:teams' %}">Team Report</a></h3>
+                <h3><a href="{% url 'home:teams' %}">Report</a></h3>
               </div>
             </div>
           {% endif %}
