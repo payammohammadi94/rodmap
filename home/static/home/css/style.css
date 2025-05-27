@@ -259,6 +259,11 @@ body {
   border-radius: 100%;
 }
 
+.letter-step-dot.completed-step {
+    background-color: #007bff;  /* Bootstrap primary blue color */
+    border-color: #007bff;
+}
+
 .letter-seperator {
   border: dotted #656c64;
   flex-grow: 1;

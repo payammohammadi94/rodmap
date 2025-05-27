@@ -41,7 +41,7 @@ class Project(models.Model):
     photo = models.ImageField(upload_to="project/",blank=True,null=True)
     create = models.DateTimeField(auto_now_add=True)
     number_of_step_until_end = models.IntegerField(blank=True,null=True)
-    doing_step_project = models.IntegerField(blank=True,null=True)
+    doing_step_project = models.IntegerField(blank=True,null=True, default=0)
     create = models.DateTimeField(auto_now_add=True,db_index=True)
 
     class Meta:
@@ -204,3 +204,26 @@ def create_task_assignments(sender, instance, created, **kwargs):
 def assign_employees_to_task(task):
     for employee in task.assigned_employees.all():
         TaskAssignment.objects.get_or_create(task=task, employee=employee)
+
+
+@receiver(post_save, sender=Task)
+def update_project_step(sender, instance, created, **kwargs):
+    try:
+        print("hello world 1")
+        if not created:  # Only handle updates, not new task creation
+            print("hello world 2")
+            
+            if instance.task_status == "complete":
+                # Increment the project's doing_step_project
+                project = instance.project
+                print("hello world 3")
+                if project.doing_step_project is None or project.doing_step_project == 0:
+                    project.doing_step_project = 1
+                    print("hello world 4")
+                else:
+                    project.doing_step_project += 1
+                    print("hello world 5")
+                project.save(update_fields=['doing_step_project'])
+                print("hello world 6")
+    except Exception as e:
+        print(f"Error in update_project_step: {str(e)}")

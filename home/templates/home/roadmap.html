@@ -52,9 +52,9 @@
                 <div class="letter-container">
                     <span class="letter">{{project.name}}</span>
                     <div style="display: flex; width: 100%; align-items: center;">
-                        {% for _ in ""|rjust:project.number_of_step_until_end %}
+                        {% for i in ""|rjust:project.number_of_step_until_end %}
                         <div class="letter-seperator"></div>
-                        <span class="letter-step-dot"></span>
+                        <span class="letter-step-dot {% if forloop.counter <= project.doing_step_project %}completed-step{% endif %}"></span>
                         {% endfor %}                        
                         <div class="letter-seperator"></div>
                     </div>
@@ -118,7 +118,6 @@
 
                             {% endif %}
                          {% endfor %}
-       
                      </div>
                  </div>
                  {% endfor %}
