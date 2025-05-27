@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.utils import timezone
 
 class RoleEmployee(models.Model):
     name = models.CharField(max_length=50)
@@ -103,10 +104,63 @@ class Task(models.Model):
     create = models.DateTimeField(auto_now_add=True,db_index=True)
     update = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        verbose_name = 'تسک‌ها'
-        verbose_name_plural = 'تسک‌ها'
-    
+    # New fields for tracking date changes
+    previous_year = models.ForeignKey(YearTask, on_delete=models.SET_NULL, null=True, blank=True, related_name='previous_tasks')
+    previous_month = models.IntegerField(null=True, blank=True)
+    previous_deadline = models.IntegerField(null=True, blank=True)
+    date_change_count = models.IntegerField(default=0)
+    date_change_history = models.JSONField(default=list, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Check if this is a new instance
+        if not self.pk:
+            super().save(*args, **kwargs)
+            return
+
+        # Get the old instance from database
+        old_instance = Task.objects.get(pk=self.pk)
+        
+        # Check if any date fields have changed
+        date_changed = (
+            old_instance.year != self.year or
+            old_instance.month != self.month or
+            old_instance.deadline != self.deadline
+        )
+
+        if date_changed:
+            # Store previous values
+            self.previous_year = old_instance.year
+            self.previous_month = old_instance.month
+            self.previous_deadline = old_instance.deadline
+            
+            # Increment change counter
+            self.date_change_count += 1
+            
+            # Add to change history
+            change_record = {
+                'timestamp': timezone.now().isoformat(),
+                'previous_year': old_instance.year.year if old_instance.year else None,
+                'previous_month': old_instance.month,
+                'previous_deadline': old_instance.deadline,
+                'new_year': self.year.year,
+                'new_month': self.month,
+                'new_deadline': self.deadline
+            }
+            
+            if not self.date_change_history:
+                self.date_change_history = []
+            self.date_change_history.append(change_record)
+
+        super().save(*args, **kwargs)
+
+    def get_date_change_history(self):
+        """Return formatted date change history"""
+        return self.date_change_history
+
+    def get_date_change_count(self):
+        """Return the number of times the date has been changed"""
+        return self.date_change_count
+
     def __str__(self):
         return f"{self.year.year}-{self.month}-{self.deadline} - {self.title}"
     
